@@ -1,20 +1,22 @@
 
-
-
 import sqlite3
 import functools
+from datetime import datetime
+
 
 #### decorator to lof SQL queries
 
-def log_queries():
-    def decorator(func):
-        def wrapper(*args, **kwargs):
-            print(f"Executing: {func.__name__}")
-            result = func(*args, **kwargs)
-            print(f"Result: {result}")
-            return result
-        return wrapper
-    return decorator
+
+def log_queries(func):
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        start_time = datetime.now()
+        result = func(*args, **kwargs)
+        end_time = datetime.now()
+        print(f"Executed {func.__name__} in {end_time - start_time}")
+        return result
+    return wrapper
+
 
 @log_queries
 def fetch_all_users(query):
