@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
 
+"""Unit tests for utils.py functions
+including memoization and HTTP JSON fetching."""
+
+
 # Unit tests for functions in utils.py
 import unittest
 from parameterized import parameterized
