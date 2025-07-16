@@ -1,1 +1,2 @@
 Creating reusable unittest parameterized to test multiple functions. This prevent duplications in our code testing.
+Memoize is implemented to ensure caching; this way a method is called once and another call usese the cached data.
