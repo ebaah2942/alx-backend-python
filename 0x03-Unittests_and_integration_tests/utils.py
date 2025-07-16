@@ -11,11 +11,12 @@ def access_nested_map(nested_map, path):
 
 
 def get_json(url):
+    """Get JSON from the provided URL"""
     return requests.get(url).json()
 
 
 def memoize(fn):
-    """Memoization decorator"""
+    """Decorator to cache the result of a property method"""
     attr_name = "_{}".format(fn.__name__)
 
     @property
