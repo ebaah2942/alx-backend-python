@@ -1,13 +1,12 @@
+#!/usr/bin/env python3
 import requests
+
+
 def access_nested_map(nested_map, path):
+    """Traverse nested dictionary using a list of keys"""
     for key in path:
-        try:
-            nested_map = nested_map[key]
-        except (KeyError, TypeError):
-            raise KeyError(key)
+        nested_map = nested_map[key]
     return nested_map
-
-
 
 
 def get_json(url):
@@ -26,5 +25,3 @@ def memoize(fn):
         return getattr(self, attr_name)
 
     return wrapper
-
-
