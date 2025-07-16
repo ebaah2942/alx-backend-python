@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-#Unit tests for functions in utils.py
+# Unit tests for functions in utils.py
 import unittest
 from parameterized import parameterized
 from utils import access_nested_map, get_json, memoize
@@ -39,7 +39,7 @@ class TestGetJson(unittest.TestCase):
         mock_response.json.return_value = test_payload
 
         with patch("utils.requests.get",
-             return_value=mock_response) as mock_get:
+              return_value=mock_response) as mock_get:
             result = get_json(test_url)
             mock_get.assert_called_once_with(test_url)
             self.assertEqual(result, test_payload)
