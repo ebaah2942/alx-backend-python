@@ -1,6 +1,6 @@
-# Unit tests for functions in utils.py
-
 # !/usr/bin/env python3
+
+# Unit tests for functions in utils.py
 import unittest
 from parameterized import parameterized
 from utils import access_nested_map, get_json, memoize
