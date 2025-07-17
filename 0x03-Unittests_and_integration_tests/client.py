@@ -2,6 +2,7 @@
 """Client module for interacting with GitHub API."""
 
 import requests
+from utils import get_json
 
 
 def get_json(url):
@@ -28,9 +29,19 @@ class GithubOrgClient:
         """Returns the public repos URL from org info."""
         return self.org.get("repos_url")
     
-    def public_repos(self):
-        """Returns list of public repo names."""
-        return [repo["name"] for repo in get_json(self._public_repos_url)]
+    def public_repos(self, license=None):
+        """Get list of public repo names, optionally filtered by license"""
+        repos = get_json(self._public_repos_url)  # This returns list of dicts
+
+        if license is None:
+            return [repo["name"] for repo in repos]
+
+        return [
+            repo["name"]
+            for repo in repos
+            if repo.get("license", {}).get("key") == license
+        ]
+
     
     @staticmethod
     def has_license(repo, license_key):
