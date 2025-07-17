@@ -92,7 +92,7 @@ class TestGithubOrgClient(unittest.TestCase):
     },
 ])
 
-
+@parameterized_class
 class TestIntegrationGithubOrgClient(unittest.TestCase):
     """Integration tests for GithubOrgClient with parameterized class"""
     
