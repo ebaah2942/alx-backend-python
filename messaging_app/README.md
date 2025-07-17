@@ -1,1 +1,1 @@
-Added first app called chats
+Added new messaging app project.

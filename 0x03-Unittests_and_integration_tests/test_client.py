@@ -8,7 +8,7 @@ from parameterized import parameterized_class
 from client import GithubOrgClient
 import fixtures
 from unittest import TestCase
-from fixtures import org_payload, repos_payload, expected_repos, apache2_repos
+
 
 
 class TestGithubOrgClient(unittest.TestCase):
@@ -103,12 +103,17 @@ class TestGithubOrgClient(unittest.TestCase):
 
 @parameterized_class([
     {
-        "org_payload": org_payload,
-        "repos_payload": repos_payload,
-        "expected_repos": expected_repos,
-        "apache2_repos": apache2_repos
-    }
+        "org_payload": {"repos_url": "https://api.github.com/orgs/testorg/repos"},
+        "repos_payload": [
+            {"name": "repo1", "license": {"key": "apache-2.0"}},
+            {"name": "repo2", "license": {"key": "mit"}},
+            {"name": "repo3", "license": {"key": "apache-2.0"}},
+        ],
+        "expected_repos": ["repo1", "repo2", "repo3"],
+        "expected_repos_with_license": ["repo1", "repo3"],
+    },
 ])
+
 class TestIntegrationGithubOrgClient(unittest.TestCase):
     """Integration tests for GithubOrgClient with parameterized class"""
 
