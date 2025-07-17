@@ -1,14 +1,16 @@
 #!/usr/bin/env python3
-
-"""Unit tests for utils.py functions
-including memoization and HTTP JSON fetching."""
-
-
-# Unit tests for functions in utils.py
 import unittest
 from parameterized import parameterized
 from utils import access_nested_map, get_json, memoize
 from unittest.mock import patch, Mock
+
+"""Unit tests for utils.py functions
+including memoization and HTTP JSON fetching."""
+
+"""Module for testing GithubOrgClient.org"""
+
+
+# Unit tests for functions in utils.py
 
 
 class TestAccessNestedMap(unittest.TestCase):
