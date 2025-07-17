@@ -2,6 +2,9 @@ from rest_framework import serializers
 from .models import CustomUser, Conversation, Message
 
 class UserSerializer(serializers.ModelSerializer):
+    full_name = serializers.SerializerMethodField()
+    phone_number = serializers.CharField(required=False)
+    
     class Meta:
         model = CustomUser
         fields = [
@@ -13,6 +16,14 @@ class UserSerializer(serializers.ModelSerializer):
             'phone_number',
         ]
         read_only_fields = ['user_id']
+
+    def get_full_name(self, obj):
+        return f"{obj.first_name} {obj.last_name}"
+
+    def validate_email(self, value):
+        if not value.endswith('@example.com'):
+            raise serializers.ValidationError("Only emails from @example.com domain are allowed.")
+        return value    
 
 class MessageSerializer(serializers.ModelSerializer):
     sender = UserSerializer(read_only=True)
