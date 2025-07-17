@@ -3,7 +3,8 @@
 
 import unittest
 from unittest.mock import patch, PropertyMock, MagicMock
-from parameterized import parameterized, parameterized_class
+from parameterized import parameterized
+from parameterized import parameterized_class
 from client import GithubOrgClient
 import fixtures
 from unittest import TestCase
@@ -78,16 +79,7 @@ class TestGithubOrgClient(unittest.TestCase):
         result = GithubOrgClient.has_license(repo, license_key)
         self.assertEqual(result, expected)
 
-
-
-
-
-class TestIntegrationGithubOrgClient(unittest.TestCase):
-    """Integration tests for GithubOrgClient with parameterized class"""
-    
-    get_patcher = None
-
-    @parameterized_class([
+@parameterized_class([
     {
         "org_payload": {"repos_url": "https://api.github.com/orgs/testorg/repos"},
         "repos_payload": [
@@ -99,6 +91,12 @@ class TestIntegrationGithubOrgClient(unittest.TestCase):
         "expected_repos_with_license": ["repo1", "repo3"],
     },
 ])
+
+
+class TestIntegrationGithubOrgClient(unittest.TestCase):
+    """Integration tests for GithubOrgClient with parameterized class"""
+    
+    get_patcher = None
 
     @classmethod
     def setUpClass(cls):
