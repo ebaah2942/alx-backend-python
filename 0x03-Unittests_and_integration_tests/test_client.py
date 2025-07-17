@@ -141,11 +141,14 @@ class TestGithubOrgClient(unittest.TestCase):
 class TestIntegrationGithubOrgClient(unittest.TestCase):
     """Integration tests for GithubOrgClient with parameterized class"""
 
+    get_patcher = None
+
     @classmethod
     def setUpClass(cls):
         """Start patching requests.get before any tests run"""
-        cls.get_patcher = patch("utils.requests.get")
+        cls.get_patcher = patch("requests.get")
         cls.mock_get = cls.get_patcher.start()
+        
 
         # Mock org response
         org_response = MagicMock()
@@ -160,8 +163,9 @@ class TestIntegrationGithubOrgClient(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls):
-        """Stop patching requests.get after all tests run"""
-        cls.get_patcher.stop()
+        """Stop patching"""
+        if cls.get_patcher:
+            cls.get_patcher.stop()
 
     def test_public_repos(self):
         """Test that public_repos returns correct repo names"""
