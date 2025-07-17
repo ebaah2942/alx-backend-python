@@ -81,7 +81,13 @@ class TestGithubOrgClient(unittest.TestCase):
 
 
 
-@parameterized_class([
+
+class TestIntegrationGithubOrgClient(unittest.TestCase):
+    """Integration tests for GithubOrgClient with parameterized class"""
+    
+    get_patcher = None
+
+    @parameterized_class([
     {
         "org_payload": {"repos_url": "https://api.github.com/orgs/testorg/repos"},
         "repos_payload": [
@@ -93,10 +99,6 @@ class TestGithubOrgClient(unittest.TestCase):
         "expected_repos_with_license": ["repo1", "repo3"],
     },
 ])
-class TestIntegrationGithubOrgClient(unittest.TestCase):
-    """Integration tests for GithubOrgClient with parameterized class"""
-    
-    get_patcher = None
 
     @classmethod
     def setUpClass(cls):
