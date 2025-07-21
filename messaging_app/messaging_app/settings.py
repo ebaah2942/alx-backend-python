@@ -125,13 +125,17 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'chats.auth.CustomJWTAuthentication',
+        'chats.auth.CustomJWTAuthentication',  # Your JWT setup
+        'rest_framework.authentication.SessionAuthentication',  # For browser-based login
+        'rest_framework.authentication.BasicAuthentication',    # For basic auth (mostly dev)
     ),
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',
     ),
 }
+
 
 AUTH_USER_MODEL = 'chats.CustomUser'
