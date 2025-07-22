@@ -3,6 +3,7 @@
 from datetime import datetime
 import os
 import logging
+from django.http import HttpResponseForbidden
 
 # Define log path relative to the current file (inside the chats app)
 log_file = os.path.join(os.path.dirname(__file__), 'requests.log')
@@ -21,4 +22,18 @@ class RequestLoggingMiddleware:
     def __call__(self, request):
         user = request.user if request.user.is_authenticated else 'Anonymous'
         logger.info(f"{datetime.now()} - User: {user} - Path: {request.path}")
+        return self.get_response(request)
+    
+class RestrictAccessByTimeMiddleware:
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+    def __call__(self, request):
+        current_hour = datetime.now().hour
+
+        # Allow access only between 18:00 (6PM) and 21:00 (9PM)
+        if request.path.startswith('/chats/'):
+            if not (18 <= current_hour < 21):
+                return HttpResponseForbidden("<h1>403 Forbidden</h1><p>Chat access is only allowed between 6PM and 9PM.</p>")
+
         return self.get_response(request)
