@@ -6,6 +6,7 @@ import logging
 from django.http import HttpResponseForbidden
 from collections import defaultdict
 from django.http import JsonResponse
+from django.http import HttpResponseForbidden
 
 # Define log path relative to the current file (inside the chats app)
 log_file = os.path.join(os.path.dirname(__file__), 'requests.log')
@@ -75,3 +76,24 @@ class OffensiveLanguageMiddleware:
         else:
             ip = request.META.get('REMOTE_ADDR')
         return ip
+    
+
+
+class RolePermissionMiddleware:
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+    def __call__(self, request):
+        restricted_paths = [
+            '/chats/delete/',      # Example path for deleting chats
+            '/chats/moderate/',    # Example path for moderation
+        ]
+
+        if request.path in restricted_paths:
+            user = request.user
+
+            # Allow only staff (admin or moderator)
+            if not user.is_authenticated or not (user.is_staff or user.is_superuser):
+                return HttpResponseForbidden("<h1>403 Forbidden</h1><p>Only admins and moderators can perform this action.</p>")
+
+        return self.get_response(request)    
