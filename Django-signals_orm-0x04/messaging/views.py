@@ -4,6 +4,7 @@ from django.contrib.auth import get_user_model, logout
 from django.shortcuts import redirect
 from django.http import HttpResponseForbidden
 from messaging.models import Message
+from django.views.decorators.cache import cache_page
 
 # Create your views here.
 
@@ -42,3 +43,8 @@ def unread_messages_view(request):
     unread_messages = Message.unread.unread_for_user(request.user).only('id', 'sender', 'content', 'timestamp')
     return render(request, 'messaging/unread_messages.html', {'unread_messages': unread_messages})
 
+
+@cache_page(60)
+def conversation_messages_view(request, conversation_id):
+    messages = Message.objects.filter(conversation_id=conversation_id).select_related('sender', 'receiver').prefetch_related('replies')
+    return render(request, 'messaging/conversation.html', {'messages': messages})
