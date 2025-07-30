@@ -1,0 +1,9 @@
+{% load thread_tags %}
+
+<h2>Conversations</h2>
+
+{% for message in messages %}
+    {% render_thread message %}
+{% empty %}
+    <p>No messages yet.</p>
+{% endfor %}

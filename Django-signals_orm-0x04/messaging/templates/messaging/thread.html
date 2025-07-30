@@ -1,0 +1,6 @@
+<div style="margin-left: 20px; border-left: 1px solid #ccc; padding-left: 10px;">
+    <p><strong>{{ message.sender.username }}</strong>: {{ message.content }}</p>
+    {% for reply in message.replies.all %}
+        {% include 'messaging/thread.html' with message=reply %}
+    {% endfor %}
+</div>

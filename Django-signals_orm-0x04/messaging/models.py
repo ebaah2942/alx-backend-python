@@ -14,9 +14,12 @@ class Message(models.Model):
     content = models.TextField()
     timestamp = models.DateTimeField(auto_now_add=True)
     edited = models.BooleanField(default=False)
+    parent_message = models.ForeignKey(
+        'self', null=True, blank=True, on_delete=models.CASCADE, related_name='replies'
+    )
 
     def __str__(self):
-        return f'Message from {self.sender} to {self.receiver}'
+        return f"From {self.sender} to {self.receiver} ({'reply' if self.parent_message else 'message'})"
 
 
 class Notification(models.Model):
