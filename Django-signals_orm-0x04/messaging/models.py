@@ -1,6 +1,7 @@
 from django.db import models
 from django.db import models
 from django.contrib.auth import get_user_model
+from .managers import UnreadMessagesManager
 
 # Create your models here.
 
@@ -17,6 +18,10 @@ class Message(models.Model):
     parent_message = models.ForeignKey(
         'self', null=True, blank=True, on_delete=models.CASCADE, related_name='replies'
     )
+    read = models.BooleanField(default=False)
+
+    objects = models.Manager()              # default manager
+    unread = UnreadMessagesManager()
 
     def __str__(self):
         return f"From {self.sender} to {self.receiver} ({'reply' if self.parent_message else 'message'})"
