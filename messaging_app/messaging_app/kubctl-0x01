@@ -1,0 +1,32 @@
+#!/bin/bash
+# messaging_app/kubctl-0x01
+
+set -e
+
+DEPLOYMENT_NAME="messaging-app-deployment"   
+NAMESPACE="default"                          
+SERVICE_NAME="messaging-app-service"         
+
+echo "📌 Scaling $DEPLOYMENT_NAME to 3 replicas..."
+kubectl scale deployment "$DEPLOYMENT_NAME" --replicas=3 --namespace "$NAMESPACE"
+
+echo "⏳ Waiting for pods to be ready..."
+kubectl rollout status deployment "$DEPLOYMENT_NAME" --namespace "$NAMESPACE"
+
+echo "📋 Current pods:"
+kubectl get pods --namespace "$NAMESPACE" -o wide
+
+echo "🔍 Checking resource usage..."
+kubectl top pods --namespace "$NAMESPACE"
+
+# Optional: port-forward to test with wrk
+echo "🌐 Port-forwarding service to localhost:8000..."
+kubectl port-forward service/$SERVICE_NAME 8000:8000 --namespace "$NAMESPACE" &
+PF_PID=$!
+sleep 5
+
+echo "🚀 Running load test with wrk..."
+wrk -t4 -c100 -d30s http://localhost:8000/
+
+# Stop port-forward when done
+kill $PF_PID
