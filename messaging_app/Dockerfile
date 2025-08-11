@@ -8,10 +8,16 @@ ENV PYTHONUNBUFFERED=1
 # Set working directory
 WORKDIR /app
 
+RUN apt-get update \
+  && apt-get install -y default-libmysqlclient-dev gcc \
+  && pip install mysqlclient
+
 # Install dependencies
 COPY requirements.txt /app/
 RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
+
+
 
 # Copy all project files
 COPY . /app/
