@@ -1,0 +1,28 @@
+#!/bin/bash
+set -e
+
+DEPLOYMENT_NAME="messaging-app-blue"
+SERVICE_URL="http://localhost:8000"   # Change if using ingress or NodePort
+
+echo "📦 Applying updated blue deployment..."
+kubectl apply -f blue_deployment.yaml
+
+echo "🔄 Monitoring rollout..."
+kubectl rollout status deployment/$DEPLOYMENT_NAME
+
+echo "📡 Starting downtime test..."
+(
+  for i in {1..30}; do
+    if curl -s --max-time 2 $SERVICE_URL >/dev/null; then
+      echo "$(date +%H:%M:%S) - ✅ Request succeeded"
+    else
+      echo "$(date +%H:%M:%S) - ❌ Request failed"
+    fi
+    sleep 1
+  done
+) &
+
+wait
+
+echo "📋 Verifying running pods..."
+kubectl get pods -l app=messaging-app
