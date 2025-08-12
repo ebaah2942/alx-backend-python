@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: messaging-app
-          image: messaging_app-web  # Your built Docker image name
+          image: ebaah2942/messaging_app:latest  # Your built Docker image name
           ports:
             - containerPort: 8000
           env:
