@@ -1,0 +1,120 @@
+pipeline {
+    agent any
+
+    tools {
+        python 'Python3'
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                git branch: 'main',
+                    credentialsId: 'ae1932ed-f1e2-4923-87af-0a6440dc621a',
+                    url: 'https://github.com/ebaah2942/alx-backend-python.git'
+            }
+        }
+
+        stage('Install Dependencies') {
+            steps {
+                dir('messaging_app') {
+                    sh '''
+                    python3 -m venv venv
+                    . venv/bin/activate
+                    pip3 install --upgrade pip
+                    pip3 install -r messaging_app/requirements.txt
+                    '''
+                }
+            }
+        }
+
+        stage('Run Tests') {
+            steps {
+                dir('messaging_app') {
+                    sh '''
+                    . venv/bin/activate
+                    pytest --junitxml=report.xml
+                    '''
+                }
+            }
+            post {
+                always {
+                    dir('messaging_app') {
+                        junit 'report.xml'
+                    }
+                }
+            }
+        }
+    }
+}
+
+pipeline {
+    agent any
+
+    environment {
+        DOCKER_HUB_CREDENTIALS = credentials('ae1932ed-f1e2-4923-87af-0a6440dc621a')   // Replace with your Jenkins credential ID
+        DOCKER_IMAGE = 'ebaah2942/messaging_app'              // Replace with your Docker Hub repo name
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                git branch: 'main',
+                    credentialsId: 'ae1932ed-f1e2-4923-87af-0a6440dc621a',
+                    url: 'https://github.com/ebaah2942/alx-backend-python.git'
+            }
+        }
+
+        stage('Install Dependencies') {
+            steps {
+                dir('messaging_app') {
+                    sh '''
+                    python3 -m venv venv
+                    . venv/bin/activate
+                    pip3 install --upgrade pip
+                    pip3 install -r requirements.txt
+                    '''
+                }
+            }
+        }
+
+        stage('Run Tests') {
+            steps {
+                dir('messaging_app') {
+                    sh '''
+                    . venv/bin/activate
+                    pytest --junitxml=report.xml
+                    '''
+                }
+            }
+            post {
+                always {
+                    dir('messaging_app') {
+                        junit 'report.xml'
+                    }
+                }
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                dir('messaging_app') {
+                    sh '''
+                    docker build -t $DOCKER_IMAGE:$BUILD_NUMBER .
+                    '''
+                }
+            }
+        }
+
+        stage('Push Docker Image') {
+            steps {
+                sh '''
+                echo $DOCKER_HUB_CREDENTIALS_PSW | docker login -u $DOCKER_HUB_CREDENTIALS_USR --password-stdin
+                docker push $DOCKER_IMAGE:$BUILD_NUMBER
+                docker tag $DOCKER_IMAGE:$BUILD_NUMBER $DOCKER_IMAGE:latest
+                docker push $DOCKER_IMAGE:latest
+                '''
+            }
+        }
+    }
+}
+
